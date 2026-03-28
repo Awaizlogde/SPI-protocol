@@ -9,12 +9,12 @@ This project implements a **Serial Peripheral Interface (SPI) Master** controlle
 ## 🏗️ Block Diagram
 Master - single slave
 <p align="center">
-  <img src="docs/assets/m2s.png" alt="SPI Master Slave" width="600"/>
+  <img src="docs/assets/images/m2s.png" alt="SPI Master Slave" width="600"/>
 </p>
 
 Mater - multi slave
 <p align="center">
-  <img src="docs/assets/m4s.png" alt="SPI Master Slave" width="600"/>
+  <img src="docs/assets/images/m4s.png" alt="SPI Master Slave" width="600"/>
 </p>
 
 
