@@ -27,40 +27,36 @@ module tb_top_spi_();
     // Slave RX Data Wires
     wire [DATA_WIDTH-1:0] slv0_rx, slv1_rx, slv2_rx, slv3_rx;
     
-    // -----------------------------------------------------------
-    // 1. Instantiate The Processor (Master)
-    // -----------------------------------------------------------
+
     spi_master #(.DATA_WIDTH(DATA_WIDTH), .SLAVES(4), .CLK_DIV(4), .CPOL(0), .CPHA(0)) 
-    processor_core (
+    master (
         .clk(clk), .rst_n(rst_n),
         .mosi_data_reg(master_tx), .miso_data_reg(master_rx),
         .MISO(MISO), .MOSI(MOSI), .SCLK(SCLK), .SS(SS),
         .start(start), .slave_sel(slave_sel), .done(master_done)
     );
 
-    // -----------------------------------------------------------
-    // 2. Instantiate The Peripherals (4 Slaves)
-    // -----------------------------------------------------------
-    // Slave 0: Temperature Sensor
-    spi_slave #(.DATA_WIDTH(DATA_WIDTH), .CPOL(0), .CPHA(0)) temp_sensor (
+    
+    
+    spi_slave #(.DATA_WIDTH(DATA_WIDTH), .CPOL(0), .CPHA(0)) slave0 (
         .SCLK(SCLK), .rst_n(rst_n), .SS(SS[0]), .MOSI(MOSI),
         .tx_data(slv0_tx), .MISO(MISO), .rx_data(slv0_rx)
     );
 
-    // Slave 1: Fan Throttle Controller
-    spi_slave #(.DATA_WIDTH(DATA_WIDTH), .CPOL(0), .CPHA(0)) fan_throttle (
+    
+    spi_slave #(.DATA_WIDTH(DATA_WIDTH), .CPOL(0), .CPHA(0)) slave1 (
         .SCLK(SCLK), .rst_n(rst_n), .SS(SS[1]), .MOSI(MOSI),
         .tx_data(slv1_tx), .MISO(MISO), .rx_data(slv1_rx)
     );
 
-    // Slave 2: OLED Display Driver
-    spi_slave #(.DATA_WIDTH(DATA_WIDTH), .CPOL(0), .CPHA(0)) display_driver (
+   
+    spi_slave #(.DATA_WIDTH(DATA_WIDTH), .CPOL(0), .CPHA(0)) slave2 (
         .SCLK(SCLK), .rst_n(rst_n), .SS(SS[2]), .MOSI(MOSI),
         .tx_data(slv2_tx), .MISO(MISO), .rx_data(slv2_rx)
     );
 
-    // Slave 3: System Memory (EEPROM)
-    spi_slave #(.DATA_WIDTH(DATA_WIDTH), .CPOL(0), .CPHA(0)) system_memory (
+   
+    spi_slave #(.DATA_WIDTH(DATA_WIDTH), .CPOL(0), .CPHA(0)) slave3(
         .SCLK(SCLK), .rst_n(rst_n), .SS(SS[3]), .MOSI(MOSI),
         .tx_data(slv3_tx), .MISO(MISO), .rx_data(slv3_rx)
     );
@@ -80,7 +76,7 @@ module tb_top_spi_();
         slv0_tx = 8'b11001100; slv1_tx = 8'b10101010; slv2_tx = 8'b11100010; slv3_tx = 8'b00110011;
         
         $display("===========================================");
-        $display("   STARTING 4-SLAVE INTEGRATION TEST   ");
+        $display("   STARTING 4-SLAVE TEST   ");
         $display("===========================================");
         
         #20 rst_n = 1; #20;
@@ -100,7 +96,7 @@ module tb_top_spi_();
             $display("\n--- Selecting slave %0d ---", i);
             $display("Master sending: %b | Expecting back: %b", master_tx, expected_slave_tx);
 
-            // Fire the transaction
+            // transaction
             start = 1;
             #10 start = 0;
 
